@@ -25,8 +25,34 @@ const Game = (() => {
             }
     }
 
+    const checkTie = (win) => {
+        if (!win){
+            for (let a = 0; a < 3; a++) {
+                for (let b = 0; b < 3; b++) {
+                    if (gameboard[a][b] === null) {
+                        return false;
+                    }
+                }
+            }
+            const instruct = document.querySelector(".instructions");
+            instruct.innerText = "Tie!"
+            return true;
+        }
+    }
+    // replaces html board with replay button
+    const replay = () => {
+        const htmlBoard = document.querySelector('.gameboard-container');
+        htmlBoard.innerHTML = '<button class="replay">Replay?</button>';
+        const replayButton = document.querySelector('.replay');
+        replayButton.addEventListener('click', () => {
+            location.reload()
+        })
+    }
 
-    return {gameboard, place_piece, check_win}
+
+
+
+    return {gameboard, place_piece, check_win, checkTie, replay}
 })();
 
 const Player = (team) => {
@@ -56,10 +82,16 @@ const Game_flow = (() => {
                 //if win is true change message to you win and have retry button
                 } else if (Game.check_win()) {
                     instruct.innerText = `${current_player.team} Wins!`;
+                    Game.replay();
+                    //delete board and replace with play again button
+                    //if play again reload page with location.reload()
                 }
             } else {
                 //change instruction to "this space is taken, please try again..."
                 instruct.innerText = "This space is taken, please try again...";
+            }
+            if (Game.checkTie()) {
+                Game.replay();
             }
         })
     });
@@ -67,6 +99,5 @@ const Game_flow = (() => {
 
 
 
-Game.place_piece(3, 1, 'x');
-console.log(Game.gameboard);
+
 
